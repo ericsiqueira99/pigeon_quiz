@@ -166,7 +166,7 @@ export const pigeonResults: Record<string, PigeonResult> = {
     emoji: "💪",
     tagline: "No pain, no grain.",
     description:
-      "Who needs to fly when you have massicve pecks? You approach life head-on and rarely back down from a challenge. People naturally gravitate toward your confidence and energy. Whether you're motivating your friends or carrying the entire group on your back, you're happiest when you're pushing yourself to be bigger, better, and stronger than yesterday.",
+      "Who needs to fly when you have massive pecks? You approach life head-on and rarely back down from a challenge. People naturally gravitate toward your confidence and energy. Whether you're motivating your friends or carrying the entire group on your back, you're happiest when you're pushing yourself to be bigger, better, and stronger than yesterday.",
     traits: {
       aggressive: 8,
       social: 10,
