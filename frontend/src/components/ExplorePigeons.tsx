@@ -20,6 +20,7 @@ export function ExplorePigeons({ userResult, onClose }: Props) {
       flexDir="column"
       css={{ touchAction: "none" }}
     >
+
       {/* ================= CAROUSEL AREA ================= */}
       <Box flex="1" overflow="hidden" minW={0}>
         <HStack
@@ -58,40 +59,34 @@ export function ExplorePigeons({ userResult, onClose }: Props) {
                 flexDir="column"
                 overflow="hidden"
               >
+
                 {/* ================= HERO ================= */}
                 <Box
                   bg={p.color + "99"}
                   px={{ base: 4, md: 6 }}
                   pt={{ base: 6, md: 10 }}
                   pb={{ base: 3, md: 6 }}
-                  h="360px"
-                  flexShrink={0}
-                  display="flex"
-                  flexDir="column"
-                  alignItems="center"
-                  justifyContent="flex-start"
+                  position="relative"
                   overflow="hidden"
+                  flexShrink={0}
                 >
-                  <VStack
-                    gap={1}
-                    align="center"
-                    justify="flex-start"
-                    w="100%"
-                  >
-                    {/* IMAGE */}
-                    <Box w="260px" h="260px" mx="auto">
+                  <VStack gap={1} align="center" justify="flex-start">
+                    {/* TIGHTER HEADER */}
+                    {/* BIGGER IMAGE */}
+                    <Box   w="260px"
+                      h="260px"
+                      mx="auto">
                       <img
                         src={p.image}
                         alt={p.name}
                         style={{
-                          width: "260px",
-                          height: "260px",
-                          objectFit: "contain",
+                          width: "clamp(220px, 36vw, 280px)",
+                          height: "auto",
+                          objectFit: "fill",
                         }}
                       />
                     </Box>
 
-                    {/* NAME */}
                     <Text
                       fontSize={{ base: "lg", md: "2xl" }}
                       fontWeight="900"
@@ -103,7 +98,6 @@ export function ExplorePigeons({ userResult, onClose }: Props) {
                       {p.name}
                     </Text>
 
-                    {/* TAGLINE */}
                     <Text
                       fontSize={{ base: "sm", md: "md" }}
                       textAlign="center"
@@ -125,10 +119,10 @@ export function ExplorePigeons({ userResult, onClose }: Props) {
                   py={4}
                   gap={5}
                   align="stretch"
-                  justify="flex-start"
                   overflow="hidden"
                   minW={0}
                 >
+
                   {/* DESCRIPTION */}
                   <Box flexShrink={0} bg="gray.50" p={4} borderRadius="12px">
                     <Text fontSize="sm" color="gray.600">
@@ -137,13 +131,17 @@ export function ExplorePigeons({ userResult, onClose }: Props) {
                   </Box>
 
                   {/* RADAR */}
-                  <Box w="100%" h={{ base: "280px", md: "340px" }}>
+                  <Box 
+                    w="100%"
+                    h={{ base: "280px", md: "340px" }}
+                  >
                     <TraitRadarChart
                       chartData={chartData}
                       resultName={p.name}
                       resultColor={p.color}
                     />
                   </Box>
+
                 </VStack>
               </Box>
             );
@@ -179,6 +177,7 @@ export function ExplorePigeons({ userResult, onClose }: Props) {
           Close
         </Box>
       </Box>
+
     </Box>
   );
 }
