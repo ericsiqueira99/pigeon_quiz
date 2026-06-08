@@ -15,9 +15,10 @@ export function ExplorePigeons({ userResult, onClose }: Props) {
   return (
     <Box
       w="100%"
-      minH="100dvh"
+      h="100dvh"
       display="flex"
       flexDir="column"
+      overflow="hidden"
       css={{ touchAction: "none" }}
     >
 
@@ -106,10 +107,7 @@ export function ExplorePigeons({ userResult, onClose }: Props) {
                   </Box>
 
                   {/* RADAR */}
-                  <Box 
-                    w="100%"
-                    h={{ base: "280px", md: "340px" }}
-                  >
+                  <Box w="100%" h={{ base: "280px", md: "340px" }}>
                     <TraitRadarChart
                       chartData={chartData}
                       resultName={p.name}
