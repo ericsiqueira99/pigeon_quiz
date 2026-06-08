@@ -61,56 +61,31 @@ export function ExplorePigeons({ userResult, onClose }: Props) {
               >
 
                 {/* ================= HERO ================= */}
-                <Box
-                  bg={p.color + "99"}
-                  px={{ base: 4, md: 6 }}
-                  pt={{ base: 6, md: 10 }}
-                  pb={{ base: 3, md: 6 }}
-                  position="relative"
-                  overflow="hidden"
+                <VStack
                   flexShrink={0}
+                  flex="0 0 42%"
+                  bg={p.color + "99"}
+                  justify="center"
+                  gap={3}
+                  px={6}
+                  overflow="hidden"
                 >
-                  <VStack gap={1} align="center" justify="flex-start">
-                    {/* TIGHTER HEADER */}
-                    {/* BIGGER IMAGE */}
-                    <Box   w="260px"
-                      h="260px"
-                      mx="auto">
-                      <img
-                        src={p.image}
-                        alt={p.name}
-                        style={{
-                          width: "clamp(220px, 36vw, 280px)",
-                          height: "auto",
-                          objectFit: "fill",
-                        }}
-                      />
-                    </Box>
-
-                    <Text
-                      fontSize={{ base: "lg", md: "2xl" }}
-                      fontWeight="900"
-                      textAlign="center"
-                      color="black"
-                      fontFamily="'Fraunces', serif"
-                      lineHeight="1.05"
-                    >
-                      {p.name}
-                    </Text>
-
-                    <Text
-                      fontSize={{ base: "sm", md: "md" }}
-                      textAlign="center"
-                      color="black"
-                      fontFamily="'Fraunces', serif"
-                      fontStyle="italic"
-                      lineHeight="1.2"
-                      px={2}
-                    >
-                      {p.emoji} {p.tagline}
-                    </Text>
-                  </VStack>
-                </Box>
+                  <img
+                    src={p.image}
+                    alt={p.name}
+                    style={{
+                      width: "80%",
+                      height: "160px",
+                      objectFit: "fill",
+                    }}
+                  />
+                  <Text fontSize="xl" fontWeight="900" color="black" textAlign="center">
+                    {p.name}
+                  </Text>
+                  <Text fontSize="md" fontStyle="italic" color="black" textAlign="center">
+                    {p.emoji} {p.tagline}
+                  </Text>
+                </VStack>
 
                 {/* ================= BODY ================= */}
                 <VStack
