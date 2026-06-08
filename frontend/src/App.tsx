@@ -15,26 +15,48 @@ const LOADING_MESSAGES = [
   { emoji: "✨", text: "Revealing your true pigeon self…" },
 ];
 
-function getResult(answers: Record<string, string>): PigeonResult {
-  const scores: Record<string, number> = {
-    foodie: 0,
-    explorer: 0,
-    homebody: 0,
-    socialite: 0,
-    philosopher: 0,
+function getUserResult(answers: Record<string, string>): Record<string, number>  {
+  // Initialize all traits to 0
+  const traits: Record<string, number> = {
+    aggressive: 0,
+    social: 0,
+    greed: 0,
+    urbanism: 0,
+    mysticism: 0,
+    romanticism: 0,
+    adaptability: 0,
   };
 
+  // Sum/subtract based on answers
   questions.forEach((q) => {
     const selectedId = answers[q.id];
     if (!selectedId) return;
     const option = q.options.find((o) => o.id === selectedId);
     if (!option) return;
     Object.entries(option.scores).forEach(([key, val]) => {
-      scores[key] = (scores[key] || 0) + val;
+      traits[key] = (traits[key] ?? 0) + val;
     });
   });
 
-  const winner = Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
+  // Cap all traits between 0 and 10
+  Object.keys(traits).forEach((key) => {
+    traits[key] = Math.min(10, Math.max(0, traits[key]));
+  });
+
+  return traits
+}
+
+function getResult(userTraits: Record<string, number>): PigeonResult  {
+  // Vector distance to find best matching result
+  const winner = Object.entries(pigeonResults)
+    .map(([id, result]) => {
+      const distance = Object.keys(userTraits).reduce((sum, key) => {
+        const diff = (userTraits[key] ?? 0) - (result.traits[key] ?? 0);
+        return sum + diff * diff;
+      }, 0);
+      return { id, distance };
+    })
+    .sort((a, b) => a.distance - b.distance)[0].id;
   return pigeonResults[winner];
 }
 
@@ -43,6 +65,7 @@ export default function App() {
   const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [result, setResult] = useState<PigeonResult | null>(null);
+  const [userResult, setUserResult] = useState<Record<string, number>>({});
   const [loadingStep, setLoadingStep] = useState(0);
   const [animating, setAnimating] = useState(false);
 
@@ -82,8 +105,10 @@ export default function App() {
       }, 200);
     } else {
       // Last question — compute and go to loading
-      setResult(getResult(answers));
-      setLoadingStep(0);
+      const tmp_userResult  = getUserResult(answers); 
+      setUserResult(tmp_userResult)
+      setResult(getResult(tmp_userResult));
+      // setLoadingStep(0);
       // setScreen("loading");
       setScreen("result")
     }
@@ -111,7 +136,7 @@ export default function App() {
   if (screen === "result" && result) {
     return (
       <Box maxW="430px" mx="auto" minH="100dvh" bg="white">
-        <Result result={result} onRestart={handleRestart} onTypes={() => {setScreen("types");}}/>
+        <Result result={result} userResult={userResult} onRestart={handleRestart} onTypes={() => {setScreen("types");}}/>
       </Box>
     );
   }
@@ -269,8 +294,8 @@ export default function App() {
   // ── TYPES ────────────────────────────────────────────────────
   if (screen === "types" && result) {
     return (
-      <Box maxW="430px" mx="auto" minH="100dvh" bg="white">
-        <ExplorePigeons onClose={() => {setScreen("result");}} />
+      <Box maxW="430px" mx="auto" h="100dvh" overflow="hidden" bg="white" w="100%">
+        <ExplorePigeons userResult={userResult} onClose={() => setScreen("result")} />
       </Box>
     );
   }
@@ -372,8 +397,8 @@ export default function App() {
           <HStack gap={6} pt={2}>
             {[
               { label: "Questions", value: `${questions.length}` },
-              { label: "Results", value: "5" },
-              { label: "Minutes", value: "~2" },
+              { label: "Results", value: `${Object.keys(pigeonResults).length}` },
+              { label: "Minutes", value: `~10` },
             ].map(({ label, value }) => (
               <VStack key={label} gap={0} align="center">
                 <Text

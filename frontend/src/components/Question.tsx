@@ -62,10 +62,10 @@ export function Question({
       <VStack gap={3} align="center" pt={2}>
         <Text fontSize="4xl" lineHeight="1">{question.emoji}</Text>
         <Text
-          fontSize={{ base: "xl", md: "2xl" }}
+          fontSize={{ base: "l", md: "2xl" }}
           fontWeight="800"
           textAlign="center"
-          lineHeight="1.3"
+          lineHeight="1.1"
           fontFamily="'Fraunces', serif"
           color="gray.900"
           px={2}
@@ -125,7 +125,7 @@ export function Question({
                 {labels[idx]}
               </Box>
               <Text
-                fontSize="sm"
+                fontSize={{ base: "xs", md: "sm" }}
                 fontWeight="500"
                 lineHeight="1.5"
                 flex="1"

@@ -1,29 +1,30 @@
 import { Box, Text, VStack } from "@chakra-ui/react";
 import { Bird, RotateCcw, Share2 } from "lucide-react";
-import { type PigeonResult } from "../data/questions";
-import {
-  Radar,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  ResponsiveContainer,
-} from "recharts";
+import { traitOrder, type PigeonResult } from "../data/questions";
+import { TraitRadarChart } from "./RadarChart";
 
 interface ResultProps {
   result: PigeonResult;
+  userResult:  Record<string, number>;
   onRestart: () => void;
   onTypes: () => void;
 }
 
-export function Result({ result, onRestart, onTypes }: ResultProps) {
-  const userVector = [2, 3, 1, 4, 2];
-
-  const chartData = result.traits.map((trait, i) => ({
+export function Result({ result, userResult, onRestart, onTypes }: ResultProps) {
+  const chartData = traitOrder.map((trait) => ({
     trait,
-    value: result.vector[i],
-    user: userVector[i],
+    value: result.traits[trait] ?? 0,
+    user: userResult[trait] ?? 0,
   }));
+  
+  function shareResults() {
+    const shareText = `I got *${result.name}* on the Pigeon Quiz!\n${result.emoji} _${result.tagline}_\n\nFind out which pigeon you are ${String.fromCodePoint(0x1F447)}\n${window.location.href}`;
+
+    // encode the entire text at once
+    const encoded = encodeURIComponent(shareText);
+    
+    window.open(`https://wa.me/?text=${encoded}`);
+  }
 
   return (
     <VStack
@@ -35,7 +36,7 @@ export function Result({ result, onRestart, onTypes }: ResultProps) {
     >
       {/* ================= HERO ================= */}
       <Box
-        bg={result.color}
+        bg={result.color + "99"}
         px={{ base: 4, md: 6 }}
         pt={{ base: 6, md: 10 }}
         pb={{ base: 3, md: 6 }}
@@ -44,25 +45,6 @@ export function Result({ result, onRestart, onTypes }: ResultProps) {
         flexShrink={0}
       >
         {/* decorative blobs */}
-        <Box
-          position="absolute"
-          top="-50px"
-          right="-30px"
-          w="160px"
-          h="160px"
-          borderRadius="full"
-          bg="whiteAlpha.300"
-        />
-        <Box
-          position="absolute"
-          bottom="-40px"
-          left="-20px"
-          w="100px"
-          h="100px"
-          borderRadius="full"
-          bg="whiteAlpha.200"
-        />
-
         <VStack gap={1} align="center">
           {/* TIGHTER HEADER */}
           <Text
@@ -81,9 +63,9 @@ export function Result({ result, onRestart, onTypes }: ResultProps) {
               src={result.image}
               alt={result.name}
               style={{
-                width: "clamp(160px, 28vw, 260px)",
+                width: "clamp(220px, 36vw, 280px)",
                 height: "auto",
-                objectFit: "contain",
+                objectFit: "fill",
               }}
             />
           </Box>
@@ -92,7 +74,7 @@ export function Result({ result, onRestart, onTypes }: ResultProps) {
             fontSize={{ base: "lg", md: "2xl" }}
             fontWeight="900"
             textAlign="center"
-            color="blackAlpha.700"
+            color="black"
             fontFamily="'Fraunces', serif"
             lineHeight="1.05"
           >
@@ -102,7 +84,7 @@ export function Result({ result, onRestart, onTypes }: ResultProps) {
           <Text
             fontSize={{ base: "sm", md: "md" }}
             textAlign="center"
-            color="blackAlpha.700"
+            color="black"
             fontFamily="'Fraunces', serif"
             fontStyle="italic"
             lineHeight="1.2"
@@ -124,7 +106,7 @@ export function Result({ result, onRestart, onTypes }: ResultProps) {
         <VStack gap={5} align="stretch">
           {/* DESCRIPTION */}
           <Text
-            fontSize="m"
+            fontSize={{ base: "sm", md: "m" }}
             lineHeight="1.5"
             color="gray.600"
           >
@@ -136,29 +118,11 @@ export function Result({ result, onRestart, onTypes }: ResultProps) {
             w="100%"
             h={{ base: "280px", md: "340px" }}
           >
-            <ResponsiveContainer width="100%" height="100%">
-              <RadarChart data={chartData}>
-                <PolarGrid />
-                <PolarAngleAxis dataKey="trait" />
-                <PolarRadiusAxis domain={[0, 5]} />
-
-                <Radar
-                  name="You"
-                  dataKey="user"
-                  stroke="#666"
-                  fill="#999"
-                  fillOpacity={0.2}
-                />
-
-                <Radar
-                  name={result.name}
-                  dataKey="value"
-                  stroke={result.color}
-                  fill={result.color}
-                  fillOpacity={0.4}
-                />
-              </RadarChart>
-            </ResponsiveContainer>
+            <TraitRadarChart
+              chartData={chartData}
+              resultName={result.name}
+              resultColor={result.color}
+            />
           </Box>
         </VStack>
       </Box>
@@ -186,6 +150,7 @@ export function Result({ result, onRestart, onTypes }: ResultProps) {
             color="white"
             fontWeight="700"
             fontSize="sm"
+            onClick={shareResults}
           >
             <Share2 size={18} />
             Share my pigeon type

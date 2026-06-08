@@ -2,3 +2,5 @@ node_modules
 dist
 dist-ssr
 *.local
+public/pigeons/real
+public/pigeons/ai

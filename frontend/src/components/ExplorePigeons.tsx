@@ -1,42 +1,25 @@
 import { Box, Text, HStack, VStack } from "@chakra-ui/react";
-import { pigeonResults, type PigeonResult } from "../data/questions";
-import {
-  Radar,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  ResponsiveContainer,
-} from "recharts";
-import { useMemo, useState } from "react";
+import { pigeonResults, traitOrder } from "../data/questions";
+import { useState } from "react";
+import { TraitRadarChart } from "./RadarChart";
 
 interface Props {
   onClose: () => void;
+  userResult: Record<string, number>;
 }
 
-export function ExplorePigeons({ onClose }: Props) {
-  const pigeons: Record<string, PigeonResult> = pigeonResults;
-  const list = Object.values(pigeons);
-
+export function ExplorePigeons({ userResult, onClose }: Props) {
+  const list = Object.values(pigeonResults);
   const [index, setIndex] = useState(0);
-  const userVector = useMemo(() => [2, 3, 1, 4, 2], []);
 
   return (
-    <VStack
-      w="100%"
-      minH="100dvh"
-      gap={0}
-      align="stretch"
-      bg="gray.50"
-    >
     <Box
-      maxW="430px"
-      mx="auto"
+      w="100%"
       h="100dvh"
-      bg="white"
       display="flex"
       flexDir="column"
-      overflow="hidden"   // ✅ kills all page-level overflow
+      overflow="hidden"
+      css={{ touchAction: "none" }}
     >
 
       {/* ================= CAROUSEL AREA ================= */}
@@ -50,6 +33,8 @@ export function ExplorePigeons({ onClose }: Props) {
           css={{
             scrollSnapType: "x mandatory",
             WebkitOverflowScrolling: "touch",
+            touchAction: "pan-x",
+            overscrollBehaviorX: "contain",
           }}
           onScroll={(e) => {
             const el = e.currentTarget;
@@ -57,19 +42,18 @@ export function ExplorePigeons({ onClose }: Props) {
             setIndex(i);
           }}
         >
-
           {list.map((p) => {
-            const chartData = p.traits.map((trait, i) => ({
+            const chartData = traitOrder.map((trait) => ({
               trait,
-              value: p.vector[i],
-              user: userVector[i],
+              value: p.traits[trait] ?? 0,
+              user: userResult[trait] ?? 0,
             }));
 
             return (
               <Box
                 key={p.name}
                 flex="0 0 100%"
-                minW="100%"          // ✅ CRITICAL: fixes sideways scroll bug
+                minW="100%"
                 h="100%"
                 scrollSnapAlign="start"
                 display="flex"
@@ -79,27 +63,27 @@ export function ExplorePigeons({ onClose }: Props) {
 
                 {/* ================= HERO ================= */}
                 <VStack
+                  flexShrink={0}
                   flex="0 0 42%"
-                  bg={p.color}
+                  bg={p.color + "99"}
                   justify="center"
                   gap={3}
                   px={6}
+                  overflow="hidden"
                 >
                   <img
                     src={p.image}
                     alt={p.name}
                     style={{
-                      width: "160px",
+                      width: "80%",
                       height: "160px",
-                      objectFit: "contain",
+                      objectFit: "fill",
                     }}
                   />
-
-                  <Text fontSize="xl" fontWeight="900" textAlign="center">
+                  <Text fontSize="xl" fontWeight="900" color="black" textAlign="center">
                     {p.name}
                   </Text>
-
-                  <Text fontSize="sm" fontStyle="italic" textAlign="center">
+                  <Text fontSize="md" fontStyle="italic" color="black" textAlign="center">
                     {p.emoji} {p.tagline}
                   </Text>
                 </VStack>
@@ -112,11 +96,11 @@ export function ExplorePigeons({ onClose }: Props) {
                   gap={5}
                   align="stretch"
                   overflow="hidden"
-                  minW={0}   // ✅ prevents recharts overflow
+                  minW={0}
                 >
 
                   {/* DESCRIPTION */}
-                  <Box bg="gray.50" p={4} borderRadius="12px">
+                  <Box flexShrink={0} bg="gray.50" p={4} borderRadius="12px">
                     <Text fontSize="sm" color="gray.600">
                       {p.description}
                     </Text>
@@ -124,41 +108,22 @@ export function ExplorePigeons({ onClose }: Props) {
 
                   {/* RADAR */}
                   <Box flex="1" minW={0} overflow="hidden">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <RadarChart data={chartData}>
-                        <PolarGrid />
-                        <PolarAngleAxis dataKey="trait" />
-                        <PolarRadiusAxis domain={[0, 5]} />
-
-                        <Radar
-                          name="You"
-                          dataKey="user"
-                          stroke="#666"
-                          fill="#999"
-                          fillOpacity={0.2}
-                        />
-
-                        <Radar
-                          name={p.name}
-                          dataKey="value"
-                          stroke={p.color}
-                          fill={p.color}
-                          fillOpacity={0.4}
-                        />
-                      </RadarChart>
-                    </ResponsiveContainer>
+                    <TraitRadarChart
+                      chartData={chartData}
+                      resultName={p.name}
+                      resultColor={p.color}
+                    />
                   </Box>
 
                 </VStack>
               </Box>
             );
           })}
-
         </HStack>
       </Box>
 
       {/* ================= DOTS ================= */}
-      <HStack justify="center" py={2} gap={2}>
+      <HStack flexShrink={0} justify="center" py={2} gap={2}>
         {list.map((_, i) => (
           <Box
             key={i}
@@ -171,7 +136,7 @@ export function ExplorePigeons({ onClose }: Props) {
       </HStack>
 
       {/* ================= CLOSE BUTTON ================= */}
-      <Box px={6} pb="max(16px, env(safe-area-inset-bottom))">
+      <Box flexShrink={0} px={6} pb="max(16px, env(safe-area-inset-bottom))">
         <Box
           as="button"
           onClick={onClose}
@@ -187,6 +152,5 @@ export function ExplorePigeons({ onClose }: Props) {
       </Box>
 
     </Box>
-    </VStack>
   );
 }
