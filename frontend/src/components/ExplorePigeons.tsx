@@ -1,7 +1,6 @@
-import { Box, Text, HStack, VStack } from "@chakra-ui/react";
+import { Box, HStack, VStack } from "@chakra-ui/react";
 import { pigeonResults, traitOrder } from "../data/questions";
 import { useState } from "react";
-import { TraitRadarChart } from "./RadarChart";
 import ResultLayout from "./ResultLayout";
 
 interface Props {

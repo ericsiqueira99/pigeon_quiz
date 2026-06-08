@@ -1,7 +1,6 @@
-import { Box, Text, VStack } from "@chakra-ui/react";
+import { Box, VStack } from "@chakra-ui/react";
 import { Bird, RotateCcw, Share2 } from "lucide-react";
 import { traitOrder, type PigeonResult } from "../data/questions";
-import { TraitRadarChart } from "./RadarChart";
 import ResultLayout from "./ResultLayout";
 
 interface ResultProps {
