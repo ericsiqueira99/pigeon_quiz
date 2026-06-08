@@ -141,6 +141,15 @@ export default function App() {
     );
   }
 
+  // ── TYPES ────────────────────────────────────────────────────
+  if (screen === "types" && result) {
+    return (
+      <Box maxW="430px" mx="auto" minH="100dvh" bg="white">
+        <ExplorePigeons userResult={userResult} onClose={() => setScreen("result")} />
+      </Box>
+    );
+  }
+
   // ── LOADING ───────────────────────────────────────────────────
   if (screen === "loading") {
     const msg = LOADING_MESSAGES[loadingStep];
@@ -287,15 +296,6 @@ export default function App() {
             {!isLastQuestion && <ChevronRight size={16} />}
           </Box>
         </Box>
-      </Box>
-    );
-  }
-
-  // ── TYPES ────────────────────────────────────────────────────
-  if (screen === "types" && result) {
-    return (
-      <Box maxW="430px" mx="auto" h="100dvh" overflow="hidden" bg="white" w="100%">
-        <ExplorePigeons userResult={userResult} onClose={() => setScreen("result")} />
       </Box>
     );
   }
